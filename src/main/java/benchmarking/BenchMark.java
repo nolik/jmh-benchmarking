@@ -1,64 +1,51 @@
 package benchmarking;
 
+import org.apache.commons.math3.util.Pair;
 import org.openjdk.jmh.annotations.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import java.util.stream.Stream;
 
 public class BenchMark {
 
     @State(Scope.Benchmark)
     public static class ExecutionPlan {
+//
+//        @Param({"10", "100", "1000"})
+//        public int iterations;
 
-        @Param({"10", "20", "30", "50", "100"})
-        public int iterations;
-
-        public int[] ids;
+        public Stream<Pair<Integer, Integer>> pairs;
 
         @Setup(Level.Invocation)
         public void setUp() {
-            ids = IntStream.generate(() -> new Random().nextInt(Integer.MAX_VALUE))
-                    .limit(iterations)
-                    .toArray();
+            pairs = Stream.generate(this::createValuePair)
+                    .limit(100);
+        }
+
+        private Pair<Integer, Integer> createValuePair() {
+            return new Pair<>(new Random().nextInt(Integer.MAX_VALUE),
+                    new Random().nextInt(Integer.MAX_VALUE));
         }
     }
 
     @Fork(value = 1, warmups = 1)
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
-    @Warmup(iterations = 5)
-    public void collectionEqualBenchmark(ExecutionPlan plan) {
-        final var firstCallection = Arrays.stream(plan.ids)
-                .boxed()
-                .collect(toList());
-        final var secondCollection = List.copyOf(firstCallection);
-        final var isEqualCollections = firstCallection.size() == secondCollection.size()
-                && secondCollection.containsAll(firstCallection);
+//    @Warmup(iterations = 5)
+    public void procedureStyle(ExecutionPlan plan) {
+        plan.pairs.forEach(pair ->
+                MathExpression.resolve(pair.getKey(), pair.getValue())
+        );
     }
 
     @Fork(value = 1, warmups = 1)
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
-    @Warmup(iterations = 5)
-    public void collectionSetEqualBenchmark(ExecutionPlan plan) {
-        final var firstCallection = Arrays.stream(plan.ids)
-                .boxed()
-                .collect(toSet());
-        final var secondCollection = Set.copyOf(firstCallection);
-        final var isEqualCollections = secondCollection.equals(firstCallection);
-    }
-
-    @Benchmark
-    @Fork(value = 1, warmups = 1)
-    @BenchmarkMode(Mode.Throughput)
-    public void init() {
-        // Do nothing
+//    @Warmup(iterations = 5)
+    public void functionalStyle(ExecutionPlan plan) {
+        plan.pairs.forEach(pair ->
+                MathExpression.funSolve(pair.getKey(), pair.getValue())
+        );
     }
 
 }
