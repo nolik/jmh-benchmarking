@@ -1,8 +1,8 @@
 package com.benchmarking.benchmark;
 
+import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -20,31 +20,32 @@ public class EnumBenchmark {
 		@Param({"100", "1000", "10000"})
 		private int iterations;
 
-		private Stream<TestedEnumFetchThoughStream> enums;
+		private List<TestedEnumFetchThoughStream> enums;
 
-		@Setup
+		@Setup()
 		public void setUp() {
 			enums = IntStream.generate(() -> new Random().nextInt(TestedEnumFetchThoughStream.values().length))
 				.limit(iterations)
-				.mapToObj(v -> TestedEnumFetchThoughStream.values()[v]);
+				.mapToObj(v -> TestedEnumFetchThoughStream.values()[v])
+				.toList();
 		}
 	}
 
 	@Benchmark
 	@BenchmarkMode(Mode.Throughput)
-	@Warmup(iterations = 5)
+	@Warmup(iterations = 3)
 	public void benchFetchingThoughStream(ExecutionPlan plan) {
-		 plan.enums
+		 plan.enums.stream()
 			.map(e -> TestedEnumFetchThoughStream.fetchEnumByValue(e.langName))
-			.toList();
+			 .count();
 	}
 
 	@Benchmark
 	@BenchmarkMode(Mode.Throughput)
-	@Warmup(iterations = 5)
+	@Warmup(iterations = 3)
 	public void benchFetchingThoughMap(ExecutionPlan plan) {
-		plan.enums
+		plan.enums.stream()
 			.map(e -> TestedEnumFetchThoughMap.fetchEnumByValue(e.langName))
-			.toList();
+			.count();
 	}
 }
