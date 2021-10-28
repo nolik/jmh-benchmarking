@@ -33,7 +33,7 @@ public class EnumBenchmark {
 
 	@Benchmark
 	@BenchmarkMode(Mode.Throughput)
-	@Warmup(iterations = 3)
+	@Warmup(iterations = 5)
 	public void benchFetchingThoughStream(ExecutionPlan plan) {
 		 plan.enums.stream()
 			.map(e -> TestedEnumFetchThoughStream.fetchEnumByValue(e.langName))
@@ -42,7 +42,7 @@ public class EnumBenchmark {
 
 	@Benchmark
 	@BenchmarkMode(Mode.Throughput)
-	@Warmup(iterations = 3)
+	@Warmup(iterations = 5)
 	public void benchFetchingThoughMap(ExecutionPlan plan) {
 		plan.enums.stream()
 			.map(e -> TestedEnumFetchThoughMap.fetchEnumByValue(e.langName))
