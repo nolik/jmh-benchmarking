@@ -5,7 +5,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -23,7 +22,7 @@ public class EnumBenchmark {
 
 		private Stream<TestedEnumFetchThoughStream> enums;
 
-		@Setup(Level.Invocation)
+		@Setup
 		public void setUp() {
 			enums = IntStream.generate(() -> new Random().nextInt(TestedEnumFetchThoughStream.values().length))
 				.limit(iterations)
