@@ -15,7 +15,7 @@ public enum TestedEnumFetchThoughMap {
 	private static final Map<String, TestedEnumFetchThoughMap> ENUM_VALUE_MAP =
 		Arrays.stream(TestedEnumFetchThoughMap.values())
 			.collect(
-				Collectors.toMap(v -> v.langName, Function.identity())
+				Collectors.toUnmodifiableMap(v -> v.langName, Function.identity())
 			);
 
 	public final String langName;

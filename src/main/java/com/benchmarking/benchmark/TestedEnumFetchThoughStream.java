@@ -8,7 +8,6 @@ public enum TestedEnumFetchThoughStream {
 	KOTLIN("kotlin", "kotlinist"),
 	RUST("rust", "rustaman"),
 	;
-
 	public final String langName;
 	public final String usersNickname;
 

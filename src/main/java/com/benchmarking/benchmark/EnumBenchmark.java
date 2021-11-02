@@ -10,14 +10,13 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
 
 public class EnumBenchmark {
 
 	@State(Scope.Benchmark)
 	public static class ExecutionPlan {
 
-		@Param({"100", "1000", "10000"})
+		@Param({"100", "10000"})
 		private int iterations;
 
 		private List<TestedEnumFetchThoughStream> enums;
@@ -33,7 +32,6 @@ public class EnumBenchmark {
 
 	@Benchmark
 	@BenchmarkMode(Mode.Throughput)
-	@Warmup(iterations = 5)
 	public void benchFetchingThoughStream(ExecutionPlan plan) {
 		 plan.enums.stream()
 			.map(e -> TestedEnumFetchThoughStream.fetchEnumByValue(e.langName))
@@ -42,7 +40,6 @@ public class EnumBenchmark {
 
 	@Benchmark
 	@BenchmarkMode(Mode.Throughput)
-	@Warmup(iterations = 5)
 	public void benchFetchingThoughMap(ExecutionPlan plan) {
 		plan.enums.stream()
 			.map(e -> TestedEnumFetchThoughMap.fetchEnumByValue(e.langName))
